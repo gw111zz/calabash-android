@@ -1,0 +1,52 @@
+0.1.0:
+      Added support for testing Xamarin Mono for Android apps.
+      Currently only Release builds are supported.
+      This new version requires you make changes in
+      features/support/app_life_cycle_hooks.rb.
+      The first time you execute "calabash-android run" upgrade instructions
+      will be displayed.
+
+0.0.19:
+      take_screenshot now works with Ruby 1.8.7
+
+0.0.18:
+      Fixed bug. HTML text fields are now cleared when using set_text.
+
+0.0.17:
+      Upgraded to Robotium 3.3
+
+0.0.16:
+      Clears text when calling set_text in a webview.
+      Added set_text helper method to support.
+
+0.0.15:
+      Prefixes screenshots with feature name
+
+0.0.14:
+      Added 'calabash-android submit'
+      Will submit your apk and features to www.lesspainful.com
+
+0.0.13:
+      Added missing file EnterKey.java
+
+0.0.12:
+      Added "I press the enter button" step
+
+0.0.11:
+      Added a small delay after executing cucumber from calabash-android-run
+      to make termination prettier.
+
+0.0.10:
+      Added -v and --verbose options to calabash-android run.
+      This will turn on verbose logging for Calabash as well as Cucumber.
+      Default logging is much less verbose now but can be even better.
+0.0.9:
+      Moved from Robotium 2.5 to 3.2.1
+0.0.8:
+      Added colors to Cucumber output
+
+0.0.7: Output from the ant build and from running Cucumber is now in sync.
+       That means that you can now trust that the output you see is actually
+       the most recent output from ant or Cucumber.
+
+0.0.6: Introducing the CHANGES file
