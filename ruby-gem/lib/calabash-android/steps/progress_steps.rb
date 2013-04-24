@@ -28,8 +28,16 @@ Then /^I wait for "([^\"]*)" to appear$/ do |text|
   performAction('wait_for_text', text)
 end
 
+Then /^I wait up to (\d+) seconds for "([^\"]*)" to appear$/ do |timeout, text|
+  performAction('wait_for_text', text, timeout)
+end
+
 Then /^I wait to see "([^\"]*)"$/ do |text|
   performAction('wait_for_text', text)
+end
+
+Then /^I wait up to (\d+) seconds to see "([^\"]*)"$/ do |timeout, text|
+  performAction('wait_for_text', text, timeout)
 end
 
 Then /^I wait for the "([^\"]*)" button to appear$/ do |text|
@@ -40,10 +48,24 @@ Then /^I wait for the view with id "([^\"]*)" to appear$/ do |text|
   performAction('wait_for_view_by_id', text)
 end
 
+Then /^I wait for the "([^\"]*)" view to appear$/ do |text|
+  performAction('wait_for_view', text)
+end
+
+
 Then /^I wait for the "([^\"]*)" screen to appear$/ do |text|
     performAction('wait_for_screen', text)
 end
 
 Then /^I wait upto (\d+) seconds for the "([^\"]*)" screen to appear$/ do |timeout, text|
     performAction('wait_for_screen', text, timeout)
+end
+
+Then /^I wait up to (\d+) seconds for the "([^\"]*)" screen to appear$/ do |timeout, text|
+    performAction('wait_for_screen', text, timeout)
+end
+
+# @param - the "tag" associated with the tab, or the text within the tab label
+Then /^I wait for the "([^\"]*)" tab to appear$/ do | tab |
+  performAction('wait_for_tab', tab)
 end

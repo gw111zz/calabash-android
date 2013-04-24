@@ -12,40 +12,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.content.Context;
+import android.content.res.Resources.NotFoundException;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.TextView;
 
 public class TestHelpers {
-	private static Map<String, Integer> resourceNamesToIds = new HashMap<String, Integer>();
-	private static Map<Integer, String> resourceIdsToNames = new HashMap<Integer, String>();
-	
-	 public static void loadIds(Context context) {
-		 
-		 resourceNamesToIds = new HashMap<String, Integer>();
-    	try {
-			InputStream is = context.getResources().getAssets().open("ids.txt");
-			BufferedReader input =  new BufferedReader(new InputStreamReader(is));
-			String line = null;
-			while (( line = input.readLine()) != null){
-				line = line.trim();
-				if (line.contains(InstrumentationBackend.TARGET_PACKAGE + ":id/")) {
-					if (line.startsWith("resource")) {
-						String[] tokens = line.split(" ");
-						String name = tokens[2];
-						name = name.replace(InstrumentationBackend.TARGET_PACKAGE + ":id/", "");
-						name = name.replace(":", "");
-							
-						resourceNamesToIds.put(name, Integer.parseInt(tokens[1].substring(2), 16));
-						resourceIdsToNames.put(Integer.parseInt(tokens[1].substring(2), 16), name);
-					}
-				}
-			}
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    }
-	
+
     public static TextView getTextViewByDescription(String description) {
         View view = getViewByDescription(description);
         if (view != null && view instanceof TextView) {
@@ -69,23 +42,44 @@ public class TestHelpers {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
+    public static <ViewType extends View> ViewType getViewById(String resName, Class<? extends View> expectedViewType) {
+        final View theView = getViewById(resName);
+
+        if (null == theView) {
+            return null;
+        }
+
+        if (!expectedViewType.isInstance(theView)) {
+            throw new RuntimeException(String.format("getViewById:  Expected to find a View of type %s but found one of type %s", expectedViewType.getClass().getName(), theView.getClass().getName()));
+        }
+        
+        return (ViewType) theView;
+    }
+
     public static View getViewById(String resName) {
-        Integer intID = resourceNamesToIds.get(resName);
-        System.out.println("getViewById: Looking for view " + resName + " as id " + intID);
-        if (intID == null) {
-            throw new RuntimeException("getViewById: Looking for view " + resName + " which does not have an id");
+        int id = InstrumentationBackend.solo.getCurrentActivity().getResources().getIdentifier(resName, "id", InstrumentationBackend.solo.getCurrentActivity().getPackageName());
+        if (id == 0) {
+            return null;
         }
-        int id = intID.intValue();
-        View view = InstrumentationBackend.solo.getCurrentActivity().findViewById(id);
-        if (view != null) {
-            if (id == view.getId()) {
-                System.out.println("Did find view " + resName + ".");
-                return view;
-            }
-            System.out.println("Did find view " + resName + " but getId returned: " + view.getId());
+
+        return InstrumentationBackend.solo.getView(id);
+    }
+    
+    public static Drawable getDrawableById(String resName) {
+        int id;
+        try {
+    	    id = InstrumentationBackend.solo.getCurrentActivity().getResources().getIdentifier(resName, "drawable", InstrumentationBackend.solo.getCurrentActivity().getPackageName());
+    	} catch( NotFoundException e ) {
+    		throw new RuntimeException("getDrawableById: Looking for drawable " + resName + " but was not found");
+    	}
+        Drawable drawable = InstrumentationBackend.solo.getCurrentActivity().getResources().getDrawable(id);
+        if (drawable != null) {
+            System.out.println("Did find drawable " + resName + ": " + drawable);
+        } else {
+        	System.out.println("Did not find drawable " + resName);
         }
-        System.out.println("Did not find view " + resName);
-        return view;
+        return drawable;
     }
 
     public static int[] parseTime(String timeString) {

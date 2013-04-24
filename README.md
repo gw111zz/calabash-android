@@ -16,54 +16,10 @@ If you have any questions on Calabash-Android, please use the Google group
 
 [http://groups.google.com/group/calabash-android](http://groups.google.com/group/calabash-android)
 
-Installation
-------------
-### Prerequisites
-You need to have Ruby installed. Verify your installation by running ruby -v in a terminal - it should print "ruby 1.8.7" (or higher)
-
-You should have the Android SDK installed and the environment variable `ANDROID_HOME` should be pointing to it.
-
-### Installation
-
-Install `calabash-android` by running
-
-- `gem install calabash-android`
-- You might have to run `sudo gem install calabash-android` if you do not have the right permissions.
-
-Configuration
--------------
-To configure calabash run `calabash-android setup` in the folder you want to use for your Calabash project. You will be asked a series of questions about your app and environment.
-Here is an example (without any answers):
-  
-    When you are through this setup your settings will be saved to .calabash_settings. You can edit this file if you have the need.
-    What is the package name of the app? You can find the package name in AndroidManifest.xml
-
-    What is the fully qualified name of the main activity?
-
-    What is the path to the app?
-
-    Which api level do you want to use?
-    It looks like you have the following versions installed:
-    4, 7, 8, 10, 15
-
-    Do you want to specify a keystore for signing the test app?
-    If now we will be using /Users/jml/.android/debug.keystore
-    Please answer yes (y) or no (n)
-    y
-    Please enter keystore location
-     
-    Please enter the password for the keystore
-
-    Please enter the alias
-
-    Please enter the password for the alias
-
-    Saved your settings to .calabash_settings. You can edit the settings manually or run this setup script again
-
-You can always run `calabash-android setup` again or change the file manually.
-
-
-**Notice:** Make sure that the app you are trying to test is signed with the key store you just selected in the setup.
+### Documentation
+The documention is split into the following sections:
+* [Installation](documentation/installation.md)
+* [Ruby API](documentation/ruby_api.md)
 
 
 Generate a Cucumber skeleton
@@ -76,7 +32,6 @@ in the current folder like this:
     | |_app_installation_hooks.rb
     | |_app_life_cycle_hooks.rb
     | |_env.rb
-    | |_hooks.rb
     |_step_definitions
     | |_calabash_steps.rb
     |_my_first.feature
@@ -87,32 +42,41 @@ Writing a test
 --------------
 The Cucumber features goes in the `features` library and should have the ".feature" extension.
 
-You can start out by looking at `features/test_dummy.feature`. You can extend this feature or make your own using some of the [predefined steps](https://github.com/calabash/calabash-android/blob/master/ruby-gem/lib/calabash-android/canned_steps.md) that comes with Calabash.
+You can start out by looking at `features/my_first.feature`. You can extend this feature or make your own using some of the [predefined steps](https://github.com/calabash/calabash-android/blob/master/ruby-gem/lib/calabash-android/canned_steps.md) that comes with Calabash.
 
 Running test
 ------------
 To run your test:
 
-    calabash-android run
+    calabash-android run <apk>
 
-If you run the test for the first time you have to build the test server before running the test
-(see below). `calabash-android run` will run `calabash-android build` if it cannot find a test server.
+Calabash-android will install an instrumentation along with your app when executing the app. We call this instrumentation for "test server". The "test server" has special permission that allows it to interact very closely with your app during test.
+Everytime you test a new binary or use an upgraded version of calabash a new test server will be build.
+The test server is an intrumentation that will run along with your app on the device to execute the test.
 
 ### Screenshot location
-Screenshots are stored in the `results` folder by default. The location can be changed by setting the `SCREENSHOT_PATH_PREFIX` environment variable.
+Screenshots are placed in the current working directory by default. The location can be changed by setting the `SCREENSHOT_PATH` environment variable.
 
-    SCREENSHOT_PATH_PREFIX=/tmp/foo calabash-android run
+    SCREENSHOT_PATH=/tmp/foo/ calabash-android run
 
-
-Building the test server
-------------------------
-Calabash will install an instrumentation along with your app on the device to run the test. Because of some app specific information we need to build the test server based on the input you provided during setup. Please note that you need to rebuild the test server every time you change the app.
-
-You build the test server like this:
-
-    calabash-android build
+would cause the first screenshot to appear at `/tmp/foo/screenshot_0.png`.
 
 Predefined steps
 -----------------
 
 The predefined steps are located in the `features/step_definitions` folder. A compiled list of predefined steps with comments is available [here](https://github.com/calabash/calabash-android/blob/master/ruby-gem/lib/calabash-android/canned_steps.md)
+
+Troubleshooting
+---------------
+
+### Problems clicking on buttons and text
+
+If it seems that buttons/text aren't being clicked properly, you need to add the following xml to your AndroidManifest.xml:
+
+```
+<uses-sdk android:targetSdkVersion="SDK_VERSION" />
+```
+
+Where SDK_VERSION is the version of the Android SDK you are using. Version numbers can be found [here](http://developer.android.com/reference/android/os/Build.VERSION_CODES.html)
+
+For example, Android 4.0 uses version 14, Android 4.0.3 uses version 15 and Android 4.1 uses version 16.

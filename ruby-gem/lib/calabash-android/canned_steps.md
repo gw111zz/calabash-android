@@ -1,7 +1,7 @@
 Canned steps
 ============
 Calabash Android comes with the following set of predefined steps.
-You can add you own steps or change the ones you see here.
+You can add your own steps or change the ones you see here.
 
 Assertion steps
 ---------------
@@ -51,6 +51,9 @@ Find the datepicker by content description and changes the date.
     Then /^I enter "([^\"]*)" into input field number (\d+)$/ do |text, number|
 Enters the specified text into the input field with index `number`.
 
+    Then /^I enter text "([^\"]*)" into field with id "([^\"]*)"$/ do |text, view_id|
+Enters Text into the input field with id `view_id`.
+
     Then /^I enter "([^\"]*)" as "([^\"]*)"$/ do |text, target|
     Then /^I enter "([^\"]*)" into "([^\"]*)"$/ do |text, target|
 Enters the specified text into the input field that has a content desciption that matches the provided target.
@@ -62,6 +65,9 @@ Finds a input field by index and blanks its value.
 
     Then /^I clear "([^\"]*)"$/ do |name|
 Finds a input field with matching content description and blanks its value.
+
+    Then /^I clear input field with id "([^\"]*)"$/ do |view_id|
+Finds the input field with id `view_id` and clears the text from it.
 
     Then /^I select "([^\"]*)" from "([^\"]*)"$/ do |item_text, spinner_content_description|
 Finds the Spinner by 'spinner_content_description' and selects the item with the matching 'item_text'
@@ -100,8 +106,14 @@ To scroll up
     Then /^I scroll up$/
 
 To open the menu and press the specified text
-    Then /^I select "([^\"]*)" from the menu$/
 
+    Then /^I select "([^\"]*)" from the menu$/
+    
+To drag from one point on the screen to another. 
+
+	Then /^I drag from (\d+):(\d+) to (\d+):(\d+) moving with (\d+) steps$/ 
+Note: x:y co-ordinates are expressed as percentages of the screen width:height
+    
 Touching
 --------
     
@@ -159,6 +171,10 @@ Waits for the current dialog to close.
     Then /^I wait to see "([^\"]*)"$/
 Waits for the specified text to appear.
 
+    Then /^I wait up to (\d+) seconds for "([^\"]*)" to appear$/
+    Then /^I wait up to (\d+) seconds to see "([^\"]*)"$/
+Waits for the specified text to appear, with a custom timeout
+
     Then /^I wait for the "([^\"]*)" button to appear$/
 Waits for a button with the specified text to appear.
 
@@ -170,6 +186,7 @@ Waits for a view view that id to appear.
 Note that use the short name and not the fully quantified name. That means if your id
 is 'com.foo.R.id.bar_label' you would use 'I press view with id "bar_label"'.
 
+    Then /^I wait up to (\d+) seconds for the "([^\"]*)" screen to appear$/ 
     Then /^I wait upto (\d+) seconds for the "([^\"]*)" screen to appear$/ 
 Waits for a particular screen (Android Activity) to appear with a timeout.
 
@@ -194,7 +211,7 @@ To take a screenshot of the phone while running the test use any of these steps.
 
 Location steps
 --------------
-If you app has the `ALLOW_MOCK_LOCATION` permission you can change the perceived location of the device by using any of these steps.
+If you allow your phone to use mocked locations (configured on your device under development settings) and your app has the `ACCESS_MOCK_LOCATION` permission you can change the perceived location of the device by using any of these steps.
 
 
 You can change the location any address or named location. This is done using the [geocoder gem](http://www.rubygeocoder.com/).
@@ -209,6 +226,23 @@ To use a set of concrete GPS cordinates
     Then /^I am at ([-+]?[0-9]*\.?[0-9]+), ([-+]?[0-9]*\.?[0-9]+)$/ do |latitude, longitude|
     Then /^I go to ([-+]?[0-9]*\.?[0-9]+), ([-+]?[0-9]*\.?[0-9]+)$/ do |latitude, longitude|
 
+Internationalization
+--------------------
+
+	Then /^I press text of translated l10key (\d+)$/ 
+Simulates that the user pressed the text of the l10nkey.	
+
+	Then /^I press button of translated l10key (\d+)$/
+Simulates that the user pressed the button with the label text of the l10nkey.
+
+	Then /^I press menu item of translated l10key (\d+)$/
+Simulates that the user pressed the menu item with the label text of the l10nkey.
+
+	Then /^I press toggle button of translated l10key (\d+)$/ 
+Simulates that the user pressed the toggle button with the label text of the l10nkey.	
+
+	Then /^I wait for the translated "([^\"]*)" l10nkey to appear$/ 
+Waits until the text of the translated l10nkey is displayed.
 
 Rotation
 --------

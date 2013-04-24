@@ -1,4 +1,10 @@
 Then /^I compare the current screen with the reference image "([^\"]*)" manually$/ do |name|
+<<<<<<< HEAD
+=======
+    # TODO: once test artifacts directory is configurable, the image location
+    # will need to be either a fully qualified path somewhere (webserver?) or
+    # be relative to the output HTML file
+>>>>>>> 9eac76c2c9b26fd69a391c1db72a8580e14458f5
     raise Exception, "Reference image not found: #{name}" if !File.exists?(name)
 
     # Assuming that the reference images are stored alongside the Features:

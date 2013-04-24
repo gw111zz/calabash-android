@@ -1,10 +1,11 @@
 package sh.calaba.instrumentationbackend;
 
+import java.io.CharArrayWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Result {
-	private static Result successResult = new Result(true);
 	
     boolean success;
     String message;
@@ -21,7 +22,13 @@ public class Result {
 		this.success = success;
 		this.message = message;
     }
-    
+
+    public Result(boolean success, List<String> messages) {
+		this.success = success;
+		this.message = null;
+		this.bonusInformation = messages;
+    }
+
     public String getMessage() {
     	return message;
     }
@@ -51,11 +58,23 @@ public class Result {
     }
         
     public static Result fromThrowable(Throwable t) {
-    	return new Result(false, t.getMessage());
+    	Result r = new Result(false, t.getMessage());
+    	CharArrayWriter caw = new CharArrayWriter();
+    	t.printStackTrace(new PrintWriter(caw));
+    	r.addBonusInformation("Exception stack trace:\n" + caw.toString());
+    	return r;
     }
     
     public static Result successResult() {
-    	return successResult;
+    	return new Result(true);
+    }
+
+    public static Result failedResult() {
+        return new Result(false);
+    }
+
+    public static Result failedResult(final String message) {
+        return new Result(false, message);
     }
     
     public String toString() {

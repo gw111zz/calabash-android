@@ -5,12 +5,10 @@ import sh.calaba.instrumentationbackend.Result;
 import sh.calaba.instrumentationbackend.actions.Action;
 
 public class WaitForScreen implements Action {
+	private static final int DEFAULT_TIMEOUT = 5 * 1000;
 
     @Override
     public Result execute(String... args) {
-
-        final int DEFAULT_TIMEOUT = 5 * 1000;
-
         switch (args.length) {
         case 0:
             return new Result(false, "Cannot check for correct screen. No Activity name supplied!");
@@ -18,14 +16,18 @@ public class WaitForScreen implements Action {
             if (InstrumentationBackend.solo.waitForActivity(args[0], DEFAULT_TIMEOUT)) {
                 return Result.successResult();
             } else {
-                return new Result(false, "Screen " + args[0] + " not found");
+            	String currentActivity = InstrumentationBackend.solo.getCurrentActivity().getClass().getSimpleName();
+            	Result result = new Result(false, "Screen " + args[0] + " not found.  Current activity is " + currentActivity);
+            	result.addBonusInformation(currentActivity);
+            	return result;
             }
         }
         case 2: { // 1st arg is Activity name, 2nd arg is timeout
-            int timeout = DEFAULT_TIMEOUT;
+            int timeout;
             
             try {
-                timeout = Integer.parseInt(args[1]);
+                // given seconds; want milliseconds
+                timeout = 1000 * Integer.parseInt(args[1]);
             } catch (NumberFormatException e) {
                 return new Result(false, "Invalid timeout supplied. Should be an integer!"); 
             }
@@ -33,7 +35,10 @@ public class WaitForScreen implements Action {
             if (InstrumentationBackend.solo.waitForActivity(args[0], timeout)) {
                 return Result.successResult();
             } else {
-                return new Result(false, "Screen " + args[0] + " not found");
+                String currentActivity = InstrumentationBackend.solo.getCurrentActivity().getClass().getSimpleName();
+            	Result result = new Result(false, "Screen " + args[0] + " not found.  Current activity is " + currentActivity);
+            	result.addBonusInformation(currentActivity);
+            	return result;
             }
         }
         default:
